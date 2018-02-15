@@ -1,4 +1,4 @@
-unit dDB;
+unit bDB;
 
 interface
 
@@ -6,7 +6,7 @@ uses Firedac.comp.client, Firedac.Phys.MySQL, Firedac.UI.Intf,
   Firedac.comp.dataset, Firedac.comp.UI,
   types, winapi.windows,
   Firedac.stan.Option, Firedac.dapt, Firedac.stan.def,
-  Data.DB, vEnv, system.sysutils, Firedac.stan.async;
+  Data.DB, vEnv, system.sysutils, Firedac.stan.async, strutils;
 
 type
   TDB = class
@@ -19,6 +19,7 @@ type
   public
     class function execute(pSql: string): tfdquery; overload;
     class function execute(pSql: string; arr_params: array of variant): tfdquery; overload;
+    class function genWhere(const FieldNames: array of string): string;
 
     class function listTables: TStringDynArray;
 
@@ -27,6 +28,8 @@ type
   end;
 
 implementation
+
+uses bSpartan;
 
 { TDB }
 
@@ -62,6 +65,22 @@ begin
   end;
 end;
 
+class function TDB.genWhere(const FieldNames: array of string): string;
+var
+  filter: string;
+  i: integer;
+begin
+
+  filter := ' WHERE ';
+  for i := Low(FieldNames) to High(FieldNames) do
+  begin
+    filter := concat(filter, ' ', FieldNames[i], '=?');
+    if i <> High(FieldNames) then
+      filter := concat(filter, ' AND');
+  end;
+  result := filter;
+end;
+
 class function TDB.getConnection: TFDConnection;
 begin
   if connection = nil then
@@ -87,7 +106,7 @@ begin
       params.Values['User_name'] := tenv.DB.User;
       params.Values['Password'] := tenv.DB.Password;
       params.Values['DriverID'] := tenv.DB.Driver;
-      params.Values['LoginTimeout'] := '2000';
+      params.Values['LoginTimeout'] := '5000';
 
       params.endUpdate;
 
@@ -106,8 +125,17 @@ class function TDB.listTables: TStringDynArray;
 var
   qry: tfdquery;
 begin
+
   result := nil;
-  qry := TDB.execute('select table_name from information_schema.tables where table_schema = ?', [tenv.DB.Database]);
+  case ansiindexstr(tenv.DB.Driver, ['mysql', 'postgres', 'firebird']) of
+    0:
+      begin
+        qry := TDB.execute('select table_name from information_schema.tables where table_schema = ?', [tenv.DB.Database]);
+      end
+  else
+    TSpartan.spartError(Format('Drive "%s" not supported yet.', [tenv.DB.Driver]));
+  end;
+
   if qry <> nil then
   begin
     with qry do
@@ -122,6 +150,7 @@ begin
       end;
     end;
   end;
+
 end;
 
 end.

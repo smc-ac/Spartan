@@ -54,12 +54,17 @@ type
     class function getConfFile: string;
 
   Type
-    System = class
+    Project = class
       class function MainController: string;
       class function MainModel: string;
       class function MainDao: string;
     end;
 
+    System = class
+      class function MainController: string;
+      class function MainModel: string;
+      class function MainDao: string;
+    end;
   end;
 
 implementation
@@ -74,19 +79,36 @@ end;
 
 { TConst.Project }
 
-class function TConst.System.MainController: string;
+class function TConst.Project.MainController: string;
 begin
   result := Tenv.System.currentPath + CONTROLLER_FILE;
 end;
 
-class function TConst.System.MainDao: string;
+class function TConst.Project.MainDao: string;
 begin
   result := Tenv.System.currentPath + DAO_FILE;
 end;
 
-class function TConst.System.MainModel: string;
+class function TConst.Project.MainModel: string;
 begin
   result := Tenv.System.currentPath + MODEL_FILE;
+end;
+
+{ TConst.System }
+
+class function TConst.System.MainController: string;
+begin
+     result := Tenv.System.exePath + CONTROLLER_FILE;
+end;
+
+class function TConst.System.MainDao: string;
+begin
+     result := Tenv.System.exePath + DAO_FILE;
+end;
+
+class function TConst.System.MainModel: string;
+begin
+     result := Tenv.System.exePath + MODEL_FILE;
 end;
 
 end.

@@ -5,13 +5,14 @@ program Spartan;
 
 uses
   System.SysUtils,
-  vEnv in 'var\vEnv.pas',
-  bSpartan in 'bin\bSpartan.pas',
-  vConst in 'var\vConst.pas',
-  bFile in 'bin\bFile.pas',
-  dDB in 'DAO\dDB.pas',
-  bFormatter in 'bin\bFormatter.pas',
-  bHelper in 'bin\bHelper.pas';
+  vEnv in 'src\var\vEnv.pas',
+  bSpartan in 'src\bin\bSpartan.pas',
+  vConst in 'src\var\vConst.pas',
+  bFile in 'src\bin\bFile.pas',
+  bDB in 'src\bin\bDB.pas',
+  bFormatter in 'src\bin\bFormatter.pas',
+  bHelper in 'src\bin\bHelper.pas',
+  Model in 'src\Model\Model.pas';
 
 begin
   try

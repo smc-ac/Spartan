@@ -63,8 +63,8 @@ implementation
 
 class function TEnv.DB.All: string;
 begin
-  result := 'driver=' + TEnv.DB.DRIVER + slinebreak + 'database=' + TEnv.DB.DATABASE + slinebreak + 'server=' + TEnv.DB.SERVER + slinebreak + 'port=' + TEnv.DB.PORT + slinebreak +
-    'user=' + TEnv.DB.USER;
+  result := 'driver=' + TEnv.DB.DRIVER + slinebreak + 'database=' + TEnv.DB.DATABASE + slinebreak + 'server=' + TEnv.DB.SERVER + slinebreak
+    + 'port=' + TEnv.DB.PORT + slinebreak + 'user=' + TEnv.DB.USER;
 end;
 
 class function TEnv.DB.getDatabase: string;
@@ -74,7 +74,7 @@ end;
 
 class function TEnv.DB.getDriver: string;
 begin
-  result := TEnv.System.ConfFile.readString('database', 'driver', 'mysql');
+  result := LowerCase(TEnv.System.ConfFile.readString('database', 'driver', 'mysql'));
 end;
 
 class function TEnv.DB.getPassword: string;
@@ -99,7 +99,7 @@ end;
 
 class procedure TEnv.DB.setDriver(value: string);
 begin
-  TEnv.System.ConfFile.writestring('database', 'driver', lowercase(value));
+  TEnv.System.ConfFile.writestring('database', 'driver', LowerCase(value));
 end;
 
 class procedure TEnv.DB.setPassword(value: string);
@@ -135,7 +135,8 @@ begin
     CONF_FULL_PATH := tconst.getConfFile;
 
   if not fileexists(CONF_FULL_PATH) then
-    raise Exception.Create('Configuration file "' + CONF_FULL_PATH + '" not found!' + slinebreak + ' Run "spartan stare ." to recriate file.');
+    raise Exception.Create('Configuration file "' + CONF_FULL_PATH + '" not found!' + slinebreak +
+      ' Run "spartan stare ." to recriate file.');
 
   result := TIniFile.Create(CONF_FULL_PATH);
 end;

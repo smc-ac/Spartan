@@ -13,7 +13,9 @@ type
     class function readInput(msg: string; defaultValue: string = ''): string;
     class function readBolInput(msg: string; defaultValue: string = ''): boolean;
     class function readBolInputWithAll(msg: string; defaultValue: string = ''): boolean;
-    class function SelectFile(CurrentDir: string = 'C:\'; Filters: string = ''): string;
+    class function selectFile(CurrentDir: string = 'C:\'; Filters: string = ''): string;
+    class function genData(value: string; countOf: Integer): string;
+    class function arrToStr(arrValue: array of string): string;
 
   end;
 
@@ -35,6 +37,18 @@ begin
     end;
 end;
 
+class function THelper.arrToStr(arrValue: array of string): string;
+var
+  i: Integer;
+begin
+  if length(arrValue) <> 0 then
+  begin
+    result := arrValue[0];
+    for i := 1 to High(arrValue) do
+      result := result + ',' + arrValue[i];
+  end;
+end;
+
 class function THelper.existsInArray(value: string; arrayValues: TStringDynArray): boolean;
 var
   _value: string;
@@ -47,6 +61,14 @@ begin
       result := true;
       break;
     end;
+end;
+
+class function THelper.genData(value: string; countOf: Integer): string;
+var
+  i: Integer;
+begin
+  for i := 1 to countOf do
+    result := result + value;
 end;
 
 class function THelper.getPathName(path: string): string;
@@ -89,7 +111,7 @@ begin
   end;
 end;
 
-class function THelper.SelectFile(CurrentDir: string = 'C:\'; Filters: string = ''): string;
+class function THelper.selectFile(CurrentDir: string = 'C:\'; Filters: string = ''): string;
 
 var
   openDialog: topendialog;

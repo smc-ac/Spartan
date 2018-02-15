@@ -2,7 +2,7 @@ unit bSpartan;
 
 interface
 
-uses vEnv, vConst, bFile, system.SysUtils, system.StrUtils, firedac.comp.client, dDB, bFormatter, bHelper, types;
+uses vEnv, vConst, bFile, system.SysUtils, system.StrUtils, firedac.comp.client, bDB, bFormatter, bHelper, types;
 
 type
   TSpartan = class
@@ -42,8 +42,8 @@ begin
     tfile.writeInFile(dir + tconst.GITIGNORE_FILE, tconst.GITIGNORE_CONTENT);
   end;
 
-  if (fileexists(dir + tconst.CONTROLLER_FILE) and THelper.readbolinput('Base Controller file already exists. Do you want to recriate it ?')) or
-    (not fileexists(dir + tconst.CONTROLLER_FILE)) then
+  if (fileexists(dir + tconst.CONTROLLER_FILE) and THelper.readbolinput('Base Controller file already exists. Do you want to recriate it ?')
+    ) or (not fileexists(dir + tconst.CONTROLLER_FILE)) then
   begin
     writeln(format('Creating Controller Weapons in %s%s ...', [dir, tconst.CONTROLLER_FILE]));
     tfile.Create(dir + tconst.CONTROLLER);
@@ -51,8 +51,8 @@ begin
     writeln('');
   end;
 
-  if (fileexists(dir + tconst.MODEL_FILE) and THelper.readbolinput('Base Model file already exists. Do you want to recriate it ?')) or (not fileexists(dir + tconst.MODEL_FILE))
-  then
+  if (fileexists(dir + tconst.MODEL_FILE) and THelper.readbolinput('Base Model file already exists. Do you want to recriate it ?')) or
+    (not fileexists(dir + tconst.MODEL_FILE)) then
   begin
     writeln(format('Creating Model Weapons in %s%s ...', [dir, tconst.MODEL_FILE]));
     tfile.Create(dir + tconst.MODEL);
@@ -60,7 +60,8 @@ begin
     writeln('');
   end;
 
-  if (fileexists(dir + tconst.DAO_FILE) and THelper.readbolinput('Base DAO file already exists. Do you want to recriate it ?')) or (not fileexists(dir + tconst.DAO_FILE)) then
+  if (fileexists(dir + tconst.DAO_FILE) and THelper.readbolinput('Base DAO file already exists. Do you want to recriate it ?')) or
+    (not fileexists(dir + tconst.DAO_FILE)) then
   begin
     writeln(format('Creating DAO Weapons in %s%s ...', [dir, tconst.DAO_FILE]));
     tfile.Create(dir + tconst.DAO);
@@ -74,8 +75,8 @@ begin
 
   confFile := dir + tconst.CONF_FILE;
 
-  if (fileexists(confFile) and THelper.readbolinput(format('Configuration file "%s" already exists. Do you want to recriate it ?', [tconst.CONF_FILE, slinebreak]))) or
-    (not fileexists(confFile)) then
+  if (fileexists(confFile) and THelper.readbolinput(format('Configuration file "%s" already exists. Do you want to recriate it ?',
+    [tconst.CONF_FILE, slinebreak]))) or (not fileexists(confFile)) then
   begin
     tfile.Create(confFile);
     writeln('');
@@ -154,13 +155,18 @@ var
   selected_controller: string;
 begin
   writeln('');
+
+  if not fileexists(tconst.Project.MainController) then
+    tfile.Copy(tconst.system.MainController, tconst.Project.MainController);
+
   selected_controller := tenv.system.currentPath + tconst.CONTROLLER + tformatter.parseController(controller_name) + tconst.pas;
-  if (fileexists(selected_controller) and THelper.readBolInputWithAll('Controller "' + selected_controller + '" already exists!' + slinebreak + 'Do you want to recriate it ?')) or
-    (not fileexists(selected_controller)) then
+  if (fileexists(selected_controller) and THelper.readBolInputWithAll('Controller "' + selected_controller + '" already exists!' +
+    slinebreak + 'Do you want to recriate it ?')) or (not fileexists(selected_controller)) then
   begin
     tfile.Create(selected_controller);
     writeln('Controller ', tformatter.parseController(controller_name), ' created successfully !');
   end;
+
 end;
 
 class procedure TSpartan.createDAO(dao_name: string);
@@ -168,9 +174,13 @@ var
   selected_DAO: string;
 begin
   writeln('');
+
+  if not fileexists(tconst.Project.MainDao) then
+    tfile.Copy(tconst.system.MainDao, tconst.Project.MainDao);
+
   selected_DAO := tenv.system.currentPath + tconst.DAO + tformatter.parseDAO(dao_name) + tconst.pas;
-  if (fileexists(selected_DAO) and THelper.readBolInputWithAll('DAO "' + selected_DAO + '" already exists!' + slinebreak + 'Do you want to recriate it ?')) or
-    (not fileexists(selected_DAO)) then
+  if (fileexists(selected_DAO) and THelper.readBolInputWithAll('DAO "' + selected_DAO + '" already exists!' + slinebreak +
+    'Do you want to recriate it ?')) or (not fileexists(selected_DAO)) then
   begin
     tfile.Create(selected_DAO);
     writeln('DAO ', tformatter.parseDAO(dao_name), ' created successfully !');
@@ -182,9 +192,15 @@ var
   selected_model: string;
 begin
   writeln('');
+
+  writeln(tconst.system.MainModel, tconst.Project.MainModel);
+
+  if not fileexists(tconst.Project.MainModel) then
+    tfile.Copy(tconst.system.MainModel, tconst.Project.MainModel);
+
   selected_model := tenv.system.currentPath + tconst.MODEL + tformatter.parseModel(model_name) + tconst.pas;
-  if (fileexists(selected_model) and THelper.readBolInputWithAll('Model "' + selected_model + '" already exists!' + slinebreak + 'Do you want to recriate it ?')) or
-    (not fileexists(selected_model)) then
+  if (fileexists(selected_model) and THelper.readBolInputWithAll('Model "' + selected_model + '" already exists!' + slinebreak +
+    'Do you want to recriate it ?')) or (not fileexists(selected_model)) then
   begin
     tfile.Create(selected_model);
     writeln('Model ', tformatter.parseModel(model_name), ' created successfully !');
@@ -234,12 +250,14 @@ begin
 
           2: { stare }
             begin
-              spartError('A NAME to your new weapon must be informed.' + slinebreak + 'If you want to create new weapon in current folder, type "spartan stare ."');
+              spartError('A NAME to your new weapon must be informed.' + slinebreak +
+                'If you want to create new weapon in current folder, type "spartan stare ."');
             end;
 
           3: { push }
             begin
-              spartError('You must choose one of the weapons bellow:' + slinebreak + '    model' + slinebreak + '    controller' + slinebreak + '    dao');
+              spartError('You must choose one of the weapons bellow:' + slinebreak + '    model' + slinebreak + '    controller' +
+                slinebreak + '    dao');
             end
         else
           spartError(format('Soldier "%s" is not part of our army.', [ParamStr(1)]));
@@ -275,7 +293,8 @@ begin
                       for table in tables_list do
                       begin
                         aName := tformatter.modelFromTable(table);
-                        if THelper.existsInArray(tenv.system.currentPath + tconst.MODEL + copy(aName, 2, length(aName)) + tconst.pas, tenv.system.Models) then
+                        if THelper.existsInArray(tenv.system.currentPath + tconst.MODEL + Copy(aName, 2, length(aName)) + tconst.pas,
+                          tenv.system.Models) then
                           writeln('       - ', aName, StringOfChar(' ', 40 - length(aName)), '( Created )')
 
                         else
@@ -294,7 +313,8 @@ begin
                       for table in tables_list do
                       begin
                         aName := tformatter.controllerFromTable(table);
-                        if THelper.existsInArray(tenv.system.currentPath + tconst.CONTROLLER + copy(aName, 2, length(aName)) + tconst.pas, tenv.system.Controllers) then
+                        if THelper.existsInArray(tenv.system.currentPath + tconst.CONTROLLER + Copy(aName, 2, length(aName)) + tconst.pas,
+                          tenv.system.Controllers) then
                           writeln('       - ', aName, StringOfChar(' ', 40 - length(aName)), '( Created )')
 
                         else
@@ -313,7 +333,8 @@ begin
                       for table in tables_list do
                       begin
                         aName := tformatter.daoFromTable(table);
-                        if THelper.existsInArray(tenv.system.currentPath + tconst.DAO + copy(aName, 2, length(aName)) + tconst.pas, tenv.system.DAOs) then
+                        if THelper.existsInArray(tenv.system.currentPath + tconst.DAO + Copy(aName, 2, length(aName)) + tconst.pas,
+                          tenv.system.DAOs) then
                           writeln('       - ', aName, StringOfChar(' ', 40 - length(aName)), '( Created )')
 
                         else
