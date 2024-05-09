@@ -1,4 +1,6 @@
 # UNMAINTAINED
+This project is archived, use as a inspiration 😀
+
 
 ![Banner](https://github.com/smc-ac/Spartan/blob/master/img/png/Spartan_banner.png)
 
